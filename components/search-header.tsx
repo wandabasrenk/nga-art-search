@@ -63,13 +63,13 @@ export function SearchHeader({
   onSuggestionClick,
 }: SearchHeaderProps) {
   const suggestions = [
-    "still life paintings",
-    "paintings of flowers",
-    "woodcuts of landscapes",
-    "portraits of women",
-    "sculptures of animals",
-    "paintings of the sea",
-    "ancient coins",
+    "Still life paintings",
+    "Paintings of flowers",
+    "Woodcuts of landscapes",
+    "Portraits of women",
+    "Sculptures of animals",
+    "Paintings of the sea",
+    "Ancient coins",
   ];
 
   return (

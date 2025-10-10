@@ -46,7 +46,7 @@ export default function Home() {
   const results = data?.results || [];
 
   return (
-    <div className="pb-32">
+    <div className="pb-32 px-4 sm:px-6 lg:px-8">
       <SearchHeader
         query={query}
         isLoading={isLoading}
