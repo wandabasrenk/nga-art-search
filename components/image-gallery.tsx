@@ -5,7 +5,8 @@ import type { MouseEvent } from "react";
 import { useCallback, useMemo, useState } from "react";
 import { GalleryItem } from "@/components/gallery-item";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import type { Position, SearchResult } from "@/lib/types";
+import { generateRandomPositions } from "@/lib/gallery-layout";
+import type { SearchResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface ImageGalleryProps {
@@ -14,115 +15,6 @@ interface ImageGalleryProps {
   isActive: boolean;
   scatterSeed: number;
   onBackToScatter: () => void;
-}
-
-// Helper function to check if two rectangles overlap
-function checkOverlap(
-  rect1: { x: number; y: number; size: number },
-  rect2: { x: number; y: number; width: number; height: number },
-  padding = 0
-): boolean {
-  return !(
-    rect1.x + rect1.size + padding < rect2.x ||
-    rect1.x > rect2.x + rect2.width + padding ||
-    rect1.y + rect1.size + padding < rect2.y ||
-    rect1.y > rect2.y + rect2.height + padding
-  );
-}
-
-// Generate non-overlapping random positions
-function generateRandomPositions(count: number): Position[] {
-  const positions: Position[] = [];
-  const padding = 20; // Space between images
-  const minSize = 180;
-  const maxSize = 280;
-  const marginLeft = 10; // Buffer from left edge
-  const marginRight = 10; // Buffer from right edge
-  const marginTop = 20; // Buffer from top edge
-  const marginBottom = 100; // Larger buffer from bottom (for search bar)
-
-  // Get viewport dimensions
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1920;
-  const vh = typeof window !== "undefined" ? window.innerHeight : 1080;
-
-  // Define exclusion zone for centered search header
-  const exclusionZone = {
-    x: vw / 2 - 225 - padding, // 450px / 2 + padding
-    y: vh / 2 - 125 - padding, // 250px / 2 + padding
-    width: 450 + padding * 2,
-    height: 250 + padding * 2,
-  };
-
-  for (let i = 0; i < count; i++) {
-    let attempts = 0;
-    let position: Position | null = null;
-
-    while (attempts < 50) {
-      const size =
-        Math.floor(Math.random() * (maxSize - minSize + 1)) + minSize;
-      // Ensure x + size stays within bounds (more conservative on right)
-      const maxAllowedX = vw - size - marginRight;
-      const x =
-        Math.random() * Math.max(0, maxAllowedX - marginLeft) + marginLeft;
-      // Ensure y + size stays within bounds
-      const maxAllowedY = vh - size - marginBottom;
-      const y =
-        Math.random() * Math.max(0, maxAllowedY - marginTop) + marginTop;
-
-      const newPos = { x, y, size };
-
-      // Check for overlaps with other images
-      const overlapsImages = positions.some((pos) =>
-        checkOverlap(
-          newPos,
-          { x: pos.x, y: pos.y, width: pos.size, height: pos.size },
-          padding
-        )
-      );
-
-      // Check for overlap with exclusion zone
-      const overlapsExclusion = checkOverlap(newPos, exclusionZone, 0);
-
-      if (!overlapsImages && !overlapsExclusion) {
-        position = newPos;
-        break;
-      }
-
-      attempts++;
-    }
-
-    // If we couldn't find a non-overlapping position, place it anyway with bounds check
-    // but still avoid the exclusion zone
-    if (position) {
-      positions.push(position);
-    } else {
-      const size = minSize;
-      const maxAllowedX = vw - size - marginRight;
-      const maxAllowedY = vh - size - marginBottom;
-
-      // Try a few times to avoid exclusion zone even in fallback
-      let fallbackPos: Position = {
-        x: Math.random() * Math.max(0, maxAllowedX - marginLeft) + marginLeft,
-        y: Math.random() * Math.max(0, maxAllowedY - marginTop) + marginTop,
-        size,
-      };
-
-      for (let j = 0; j < 10; j++) {
-        const testPos = {
-          x: Math.random() * Math.max(0, maxAllowedX - marginLeft) + marginLeft,
-          y: Math.random() * Math.max(0, maxAllowedY - marginTop) + marginTop,
-          size,
-        };
-        if (!checkOverlap(testPos, exclusionZone, 0)) {
-          fallbackPos = testPos;
-          break;
-        }
-      }
-      positions.push(fallbackPos);
-    }
-  }
-
-  return positions;
 }
 
 export function ImageGallery({
@@ -139,8 +31,11 @@ export function ImageGallery({
 
   // Generate random positions only once when component mounts
   const randomPositions = useMemo(
-    () => (shouldRenderScatter ? generateRandomPositions(images.length) : []),
-    [images.length, scatterSeed, shouldRenderScatter]
+    () =>
+      shouldRenderScatter
+        ? generateRandomPositions(images.length, scatterSeed)
+        : [],
+    [images.length, scatterSeed, shouldRenderScatter],
   );
 
   const handleImageLoad = useCallback((imageId: string) => {
@@ -151,7 +46,7 @@ export function ImageGallery({
     (isHovered: boolean, imageId: string) => {
       setHoveredId(isHovered ? imageId : null);
     },
-    []
+    [],
   );
 
   const renderItems = (active: boolean) =>
@@ -175,7 +70,7 @@ export function ImageGallery({
         onBackToScatter();
       }
     },
-    [onBackToScatter]
+    [onBackToScatter],
   );
 
   const handleGridClick = useCallback((event: MouseEvent<HTMLDivElement>) => {

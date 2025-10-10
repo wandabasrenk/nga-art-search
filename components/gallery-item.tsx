@@ -127,7 +127,7 @@ export function GalleryItem({
 
       <DialogContent
         showCloseButton={false}
-        className="p-0 border-0 w-auto h-auto max-w-[95vw] sm:max-w-[90vw] max-h-[80vh] sm:max-h-[80vh] overflow-hidden"
+        className="p-0 border-0 w-auto h-auto max-w-[95vw] sm:max-w-[90vw] max-h-[90vh] sm:max-h-[90vh] overflow-auto bg-transparent place-items-center"
       >
         <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
         <Image
@@ -135,7 +135,7 @@ export function GalleryItem({
           alt={dialogTitle}
           width={1200}
           height={1200}
-          className="rounded-lg max-w-full w-auto h-auto object-contain"
+          className="rounded-lg max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain"
           unoptimized
         />
       </DialogContent>
