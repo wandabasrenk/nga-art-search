@@ -1,12 +1,11 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 import type { FormEvent } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 
 interface SearchHeaderProps {
   query: string;
@@ -14,7 +13,6 @@ interface SearchHeaderProps {
   onQueryChange: (value: string) => void;
   onSearch: (event: FormEvent) => void;
   isActive: boolean;
-  setIsActive: (active: boolean) => void;
   onSuggestionClick: (suggestion: string) => void;
 }
 
@@ -22,7 +20,6 @@ interface SearchInputProps {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
-  onFocus?: () => void;
   disabled?: boolean;
 }
 
@@ -30,7 +27,6 @@ function SearchInput({
   query,
   isLoading,
   onQueryChange,
-  onFocus,
   disabled = false,
 }: SearchInputProps) {
   return (
@@ -39,16 +35,25 @@ function SearchInput({
         type="text"
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
-        onFocus={onFocus}
         placeholder="Search for art..."
-        className="shadow-lg !text-xl py-5 !bg-background tracking-tighter"
+        className="!bg-background/70 tracking-tighter backdrop-blur-sm"
         disabled={disabled || isLoading}
       />
-      {isLoading && (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2">
-          <Loader2 className="animate-spin text-muted-foreground" size={18} />
-        </div>
-      )}
+      <Button
+        type="submit"
+        size="icon"
+        variant="ghost"
+        className="absolute right-2 top-1/2 -translate-y-1/2"
+        disabled={disabled || isLoading}
+        aria-label="Search"
+        title="Search"
+      >
+        {isLoading ? (
+          <Loader2 className="size-4 animate-spin text-muted-foreground" />
+        ) : (
+          <Send className="size-4" />
+        )}
+      </Button>
     </div>
   );
 }
@@ -59,7 +64,6 @@ export function SearchHeader({
   onQueryChange,
   onSearch,
   isActive,
-  setIsActive,
   onSuggestionClick,
 }: SearchHeaderProps) {
   const suggestions = [
@@ -105,7 +109,6 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
-            onFocus={() => setIsActive(true)}
           />
         </motion.form>
 
@@ -126,7 +129,7 @@ export function SearchHeader({
               variant="outline"
               size="sm"
               onClick={() => onSuggestionClick(suggestion)}
-              className="font-light !bg-background text-xs sm:text-sm"
+              className="font-light !bg-background/70 text-xs sm:text-sm backdrop-blur-sm"
             >
               {suggestion}
             </Button>

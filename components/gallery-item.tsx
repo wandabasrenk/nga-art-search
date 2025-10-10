@@ -87,7 +87,7 @@ export function GalleryItem({
       />
 
       <motion.div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background/80 via-background/40 to-transparent rounded-b-md"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background/80 via-background/50 to-transparent rounded-b-md"
         animate={isHovered ? "visible" : "hidden"}
         variants={{
           hidden: { opacity: 0 },
@@ -105,7 +105,7 @@ export function GalleryItem({
         }}
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
-        <div className="flex flex-col items-start gap-0 px-4 py-3 text-xs text-foreground">
+        <div className="flex flex-col items-start gap-0 px-4 py-3 text-xs">
           <p className="text-sm font-medium truncate w-full">{displayTitle}</p>
           {image.metadata.artist && (
             <span className="truncate w-full">{image.metadata.artist}</span>

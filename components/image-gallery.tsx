@@ -4,6 +4,7 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import type { MouseEvent } from "react";
 import { useCallback, useMemo, useState } from "react";
 import { GalleryItem } from "@/components/gallery-item";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import type { Position, SearchResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +20,7 @@ interface ImageGalleryProps {
 function checkOverlap(
   rect1: { x: number; y: number; size: number },
   rect2: { x: number; y: number; width: number; height: number },
-  padding = 0,
+  padding = 0
 ): boolean {
   return !(
     rect1.x + rect1.size + padding < rect2.x ||
@@ -133,20 +134,25 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const isCompactViewport = useIsMobile(1024);
+  const shouldRenderScatter = !isCompactViewport;
 
   // Generate random positions only once when component mounts
   const randomPositions = useMemo(
-    () => generateRandomPositions(images.length),
-    [images.length, scatterSeed]
+    () => (shouldRenderScatter ? generateRandomPositions(images.length) : []),
+    [images.length, scatterSeed, shouldRenderScatter]
   );
 
   const handleImageLoad = useCallback((imageId: string) => {
     setLoadedImages((prev) => new Set(prev).add(imageId));
   }, []);
 
-  const handleHoverChange = useCallback((isHovered: boolean, imageId: string) => {
-    setHoveredId(isHovered ? imageId : null);
-  }, []);
+  const handleHoverChange = useCallback(
+    (isHovered: boolean, imageId: string) => {
+      setHoveredId(isHovered ? imageId : null);
+    },
+    []
+  );
 
   const renderItems = (active: boolean) =>
     images.map((image, index) => (
@@ -159,7 +165,7 @@ export function ImageGallery({
         onLoad={() => handleImageLoad(image.file_id)}
         onHover={(hovered) => handleHoverChange(hovered, image.file_id)}
         isActive={active}
-        position={randomPositions[index]}
+        position={shouldRenderScatter ? randomPositions[index] : undefined}
       />
     ));
 
@@ -169,7 +175,7 @@ export function ImageGallery({
         onBackToScatter();
       }
     },
-    [onBackToScatter],
+    [onBackToScatter]
   );
 
   const handleGridClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
@@ -182,16 +188,18 @@ export function ImageGallery({
 
   return (
     <div className="relative">
-      <motion.div
-        key={`scatter-${scatterSeed}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isActive ? 0 : 1 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className={cn("relative", { "pointer-events-none": isActive })}
-        aria-hidden={isActive}
-      >
-        {renderItems(false)}
-      </motion.div>
+      {shouldRenderScatter && (
+        <motion.div
+          key={`scatter-${scatterSeed}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isActive ? 0 : 1 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className={cn("relative", { "pointer-events-none": isActive })}
+          aria-hidden={isActive}
+        >
+          {renderItems(false)}
+        </motion.div>
+      )}
 
       <AnimatePresence>
         {isActive && (
@@ -204,7 +212,7 @@ export function ImageGallery({
             className="fixed inset-0 z-10 overflow-auto"
             onClick={handleOverlayClick}
           >
-            <div className="mx-auto max-w-7xl p-8">
+            <div className="mx-auto max-w-7xl p-8 pb-20">
               <LayoutGroup>
                 <motion.div
                   layout

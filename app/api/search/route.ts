@@ -21,6 +21,9 @@ export async function GET(request: NextRequest) {
       query,
       store_identifiers: ["nga-public-images"], // Update with your store identifier
       top_k: 16,
+      search_options: {
+        score_threshold: 0.55,
+      },
     });
 
     return NextResponse.json({

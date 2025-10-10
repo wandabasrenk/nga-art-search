@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Discover art with natural language",
+  title: "Discover art with Mixedbread Search",
   description:
     "Browse and search the complete public image collection of the National Gallery of Art, powered by Mixedbread Search. Discover artworks, artists, and more with natural language.",
 };
@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           disableTransitionOnChange
           enableSystem
         >
