@@ -35,7 +35,7 @@ export function ImageGallery({
       shouldRenderScatter
         ? generateRandomPositions(images.length, scatterSeed)
         : [],
-    [images.length, scatterSeed, shouldRenderScatter],
+    [images.length, scatterSeed, shouldRenderScatter]
   );
 
   const handleImageLoad = useCallback((imageId: string) => {
@@ -46,7 +46,7 @@ export function ImageGallery({
     (isHovered: boolean, imageId: string) => {
       setHoveredId(isHovered ? imageId : null);
     },
-    [],
+    []
   );
 
   const renderItems = (active: boolean) =>
@@ -70,7 +70,7 @@ export function ImageGallery({
         onBackToScatter();
       }
     },
-    [onBackToScatter],
+    [onBackToScatter]
   );
 
   const handleGridClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
@@ -107,7 +107,7 @@ export function ImageGallery({
             className="fixed inset-0 z-10 overflow-auto"
             onClick={handleOverlayClick}
           >
-            <div className="mx-auto max-w-7xl p-8 pb-20">
+            <div className="mx-auto max-w-7xl p-8 py-20">
               <LayoutGroup>
                 <motion.div
                   layout

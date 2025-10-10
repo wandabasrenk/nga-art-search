@@ -135,7 +135,6 @@ export function SearchHeader({
             </Button>
           ))}
         </motion.div>
-
         <motion.div
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
@@ -146,14 +145,8 @@ export function SearchHeader({
           className="mt-4 text-center text-xs text-muted-foreground"
         >
           <p>
-            Powered by{" "}
-            <Link
-              href="https://mixedbread.com"
-              className="font-semibold text-orange-600"
-              target="_blank"
-            >
-              Mixedbread
-            </Link>
+            Search through over 50,000 images from the National Gallery of Art
+            public collection.
           </p>
         </motion.div>
       </div>

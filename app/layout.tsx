@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { Header } from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
@@ -31,7 +32,8 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          {children}
+          <Header />
+          <main className="pt-12 sm:pt-14">{children}</main>
         </ThemeProvider>
       </body>
     </html>

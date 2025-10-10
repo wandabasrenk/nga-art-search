@@ -12,13 +12,13 @@ import type { SearchResponse } from "@/lib/types";
 export default function Home() {
   const [query, setQuery] = useState("Paintings of winter landscapes");
   const [searchQuery, setSearchQuery] = useState(
-    "Paintings of winter landscapes",
+    "Paintings of winter landscapes"
   );
   const [isActive, setIsActive] = useState(false);
   const [scatterSeed, setScatterSeed] = useState(0);
   const { data, isLoading } = useSWR<SearchResponse>(
     searchQuery ? `/api/search?q=${encodeURIComponent(searchQuery)}` : null,
-    fetcher,
+    fetcher
   );
 
   const handleSearch = (event: FormEvent) => {
@@ -43,7 +43,7 @@ export default function Home() {
   const results = data?.results || [];
 
   return (
-    <div className="pb-32 px-4 sm:px-6 lg:px-8">
+    <div className="pb-32">
       <SearchHeader
         query={query}
         isLoading={isLoading}
