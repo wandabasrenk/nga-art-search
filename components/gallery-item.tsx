@@ -87,7 +87,7 @@ export function GalleryItem({
       />
 
       <motion.div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background/80 via-background/50 to-transparent rounded-b-md"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-background/80 via-background/60 to-transparent rounded-b-md"
         animate={isHovered ? "visible" : "hidden"}
         variants={{
           hidden: { opacity: 0 },
