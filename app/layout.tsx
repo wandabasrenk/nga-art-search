@@ -33,7 +33,7 @@ export default function RootLayout({
           enableSystem
         >
           <Header />
-          <main className="pt-12 sm:pt-14">{children}</main>
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
