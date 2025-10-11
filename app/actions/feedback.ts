@@ -17,7 +17,9 @@ export type FeedbackFormState = {
 };
 
 const feedbackLimiter = new RateLimiterMemory({
-  points: 2,
+  points: process.env.FEEDBACK_LIMIT
+    ? parseInt(process.env.FEEDBACK_LIMIT, 10)
+    : 2,
   duration: 60 * 60 * 24, // 2 submissions per day
   blockDuration: 60 * 60 * 24,
 });
