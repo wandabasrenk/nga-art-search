@@ -124,7 +124,7 @@ export function SearchHeader({
               variant="outline"
               size="sm"
               onClick={() => onSuggestionClick(suggestion)}
-              className="font-light !bg-background/70 text-xs sm:text-sm backdrop-blur-sm"
+              className="font-light bg-background/70 text-xs sm:text-sm backdrop-blur-sm"
             >
               {suggestion}
             </Button>

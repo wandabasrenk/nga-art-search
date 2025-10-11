@@ -1,8 +1,6 @@
-"use client";
-
-import { useState } from "react";
-import Link from "next/link";
 import { MenuIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { FeedbackDialog } from "@/components/feedback-dialog";
 import { InfoDialog } from "@/components/info-dialog";
@@ -38,11 +36,12 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-12 sm:h-14 items-center justify-between px-3 sm:px-4">
         <a href="/" className="flex-shrink-0">
-          {/* biome-ignore lint: Using img for simplicity */}
-          <img
+          <Image
             src="/logo_mb.svg"
             alt="Mixedbread"
-            className="h-3.5 sm:h-5 lg:h-6 w-auto"
+            className="size-6 sm:size-7 lg:size-8"
+            width={32}
+            height={32}
           />
         </a>
 
