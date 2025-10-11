@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const feedbackSchema = z
   .object({
-    rating: z.enum(["good", "mid", "bad"]).nullable().optional(),
+    rating: z.enum(["good", "okay", "bad"]).nullable().optional(),
     message: z
       .string()
       .max(500, "Message must be at most 500 characters.")
@@ -20,6 +20,6 @@ export type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
 export const RATINGS = [
   { value: "good" as const, emoji: "😊", label: "Good" },
-  { value: "mid" as const, emoji: "😐", label: "Okay" },
+  { value: "okay" as const, emoji: "😐", label: "Okay" },
   { value: "bad" as const, emoji: "😞", label: "Bad" },
 ] as const;

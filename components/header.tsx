@@ -1,6 +1,9 @@
+"use client";
+
 import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 import { FeedbackDialog } from "@/components/feedback-dialog";
 import { InfoDialog } from "@/components/info-dialog";

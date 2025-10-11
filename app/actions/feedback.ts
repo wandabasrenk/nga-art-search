@@ -49,7 +49,7 @@ export async function submitFeedback(
 
     const ratingEmojis = {
       good: "Good",
-      mid: "Okay",
+      okay: "Okay",
       bad: "Bad",
     };
 
