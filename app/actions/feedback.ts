@@ -1,6 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
+import { RateLimiterMemory } from "rate-limiter-flexible";
 import { Resend } from "resend";
+import sanitizeHtml from "sanitize-html";
 import { feedbackSchema } from "@/lib/validations/feedback";
 
 export type FeedbackFormState = {
@@ -13,12 +16,43 @@ export type FeedbackFormState = {
   };
 };
 
+const feedbackLimiter = new RateLimiterMemory({
+  points: 2,
+  duration: 60 * 60 * 24, // 2 submissions per day
+  blockDuration: 60 * 60 * 24,
+});
+
 export async function submitFeedback(
   // biome-ignore lint: prevState required by useActionState signature
   prevState: FeedbackFormState,
   formData: FormData,
 ): Promise<FeedbackFormState> {
   try {
+    const headerList = await headers();
+    const forwardedFor = headerList.get("x-forwarded-for");
+    const clientIdentifier =
+      forwardedFor?.split(",")[0]?.trim() ??
+      headerList.get("x-real-ip") ??
+      headerList.get("cf-connecting-ip") ??
+      headerList.get("x-vercel-ip") ??
+      `anonymous:${headerList.get("user-agent") ?? "unknown"}`;
+
+    try {
+      await feedbackLimiter.consume(clientIdentifier);
+    } catch (rateLimiterRes) {
+      console.warn(
+        "Feedback rate limit exceeded for",
+        clientIdentifier,
+        rateLimiterRes,
+      );
+      return {
+        success: false,
+        message:
+          "You have reached the daily feedback limit. Please try again tomorrow.",
+        timestamp: Date.now(),
+      };
+    }
+
     const rawData = {
       rating: formData.get("rating") as string | null,
       message: formData.get("message") || undefined,
@@ -45,6 +79,11 @@ export async function submitFeedback(
     }
 
     const { rating, message } = validatedData.data;
+    const sanitizedMessage = message
+      ? sanitizeHtml(message, { allowedTags: [], allowedAttributes: {} })
+          .trim()
+          .replace(/\r?\n/g, "<br>")
+      : undefined;
     const resend = new Resend(apiKey);
 
     const ratingEmojis = {
@@ -65,8 +104,8 @@ export async function submitFeedback(
         <h2>New Feedback Received</h2>
         <p><strong>Rating:</strong> ${ratingText}</p>
         ${
-          message
-            ? `<p><strong>Message:</strong></p><p>${message}</p>`
+          sanitizedMessage
+            ? `<p><strong>Message:</strong></p><p>${sanitizedMessage}</p>`
             : "<p><em>No message provided</em></p>"
         }
         <hr>
