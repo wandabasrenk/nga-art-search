@@ -42,7 +42,6 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
   const maxSize = 280;
   const marginLeft = 15;
   const marginRight = 15;
-  
 
   const vw = typeof window !== "undefined" ? window.innerWidth : 1920;
   const vh = typeof window !== "undefined" ? window.innerHeight : 1080;
