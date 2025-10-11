@@ -133,7 +133,7 @@ export function GalleryItem({
             className="rounded-lg max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain"
           />
           {artworkUrl && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+            <div className="absolute bottom-4 right-4">
               <Button asChild variant="secondary" size="sm">
                 <Link
                   href={artworkUrl}
