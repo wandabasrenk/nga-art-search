@@ -1,0 +1,106 @@
+"use server";
+
+import { Resend } from "resend";
+import { feedbackSchema } from "@/lib/validations/feedback";
+
+export type FeedbackFormState = {
+  success: boolean;
+  message?: string;
+  timestamp?: number;
+  errors?: {
+    rating?: string[];
+    message?: string[];
+  };
+};
+
+export async function submitFeedback(
+  // biome-ignore lint: prevState required by useActionState signature
+  prevState: FeedbackFormState,
+  formData: FormData,
+): Promise<FeedbackFormState> {
+  try {
+    const rawData = {
+      rating: formData.get("rating") as string | null,
+      message: formData.get("message") || undefined,
+    };
+
+    const validatedData = feedbackSchema.safeParse(rawData);
+
+    if (!validatedData.success) {
+      return {
+        success: false,
+        errors: validatedData.error.flatten((issue) => issue.message)
+          .fieldErrors,
+      };
+    }
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("RESEND_API_KEY is not configured");
+      return {
+        success: false,
+        message: "Email service is not configured. Please contact support.",
+        timestamp: Date.now(),
+      };
+    }
+
+    const { rating, message } = validatedData.data;
+    const resend = new Resend(apiKey);
+
+    const ratingEmojis = {
+      good: "Good",
+      mid: "Okay",
+      bad: "Bad",
+    };
+
+    const ratingText = rating
+      ? ratingEmojis[rating as keyof typeof ratingEmojis]
+      : "No rating";
+
+    const { error } = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+      to: process.env.RESEND_TO_EMAIL || "support@mixedbread.com",
+      subject: `New Feedback - NGA Gallery [${ratingText}]`,
+      html: `
+        <h2>New Feedback Received</h2>
+        <p><strong>Rating:</strong> ${ratingText}</p>
+        ${
+          message
+            ? `<p><strong>Message:</strong></p><p>${message}</p>`
+            : "<p><em>No message provided</em></p>"
+        }
+        <hr>
+        <p>Sent from NGA Gallery - Mixedbread Art Search - ${new Date().toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          },
+        )}</p>
+      `,
+    });
+
+    if (error) {
+      console.error("Resend API error:", error);
+      return {
+        success: false,
+        message: "Failed to send feedback. Please try again.",
+        timestamp: Date.now(),
+      };
+    }
+
+    return {
+      success: true,
+      message: "Feedback sent successfully!",
+      timestamp: Date.now(),
+    };
+  } catch (error) {
+    console.error("Error sending feedback:", error);
+    return {
+      success: false,
+      message: "Failed to send feedback. Please try again.",
+      timestamp: Date.now(),
+    };
+  }
+}

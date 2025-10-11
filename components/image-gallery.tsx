@@ -2,7 +2,7 @@
 
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import type { MouseEvent } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { GalleryItem } from "@/components/gallery-item";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { generateRandomPositions } from "@/lib/gallery-layout";
@@ -24,8 +24,6 @@ export function ImageGallery({
   scatterSeed,
   onBackToScatter,
 }: ImageGalleryProps) {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const isCompactViewport = useIsMobile(1024);
   const shouldRenderScatter = !isCompactViewport;
 
@@ -35,18 +33,7 @@ export function ImageGallery({
       shouldRenderScatter
         ? generateRandomPositions(images.length, scatterSeed)
         : [],
-    [images.length, scatterSeed, shouldRenderScatter]
-  );
-
-  const handleImageLoad = useCallback((imageId: string) => {
-    setLoadedImages((prev) => new Set(prev).add(imageId));
-  }, []);
-
-  const handleHoverChange = useCallback(
-    (isHovered: boolean, imageId: string) => {
-      setHoveredId(isHovered ? imageId : null);
-    },
-    []
+    [images.length, scatterSeed, shouldRenderScatter],
   );
 
   const renderItems = (active: boolean) =>
@@ -55,10 +42,6 @@ export function ImageGallery({
         key={image.file_id}
         image={image}
         index={index}
-        isLoaded={loadedImages.has(image.file_id)}
-        isHovered={hoveredId === image.file_id}
-        onLoad={() => handleImageLoad(image.file_id)}
-        onHover={(hovered) => handleHoverChange(hovered, image.file_id)}
         isActive={active}
         position={shouldRenderScatter ? randomPositions[index] : undefined}
       />
@@ -70,19 +53,19 @@ export function ImageGallery({
         onBackToScatter();
       }
     },
-    [onBackToScatter]
+    [onBackToScatter],
   );
 
   const handleGridClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
   }, []);
 
-  if (isLoading || images.length === 0) {
+  if (images.length === 0) {
     return null;
   }
 
   return (
-    <div className="relative">
+    <div className="relative" aria-busy={isLoading}>
       {shouldRenderScatter && (
         <motion.div
           key={`scatter-${scatterSeed}`}

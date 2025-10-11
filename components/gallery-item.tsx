@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
-
+import Link from "next/link";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -16,10 +17,6 @@ import type { Position, SearchResult } from "@/lib/types";
 interface GalleryItemProps {
   image: SearchResult;
   index: number;
-  isLoaded: boolean;
-  isHovered: boolean;
-  onLoad: () => void;
-  onHover: (hovered: boolean) => void;
   isActive: boolean;
   position?: Position;
 }
@@ -27,10 +24,6 @@ interface GalleryItemProps {
 export function GalleryItem({
   image,
   index,
-  isLoaded,
-  isHovered,
-  onLoad,
-  onHover,
   isActive,
   position,
 }: GalleryItemProps) {
@@ -38,15 +31,16 @@ export function GalleryItem({
   const imageUrl = image.metadata.image_url ?? "";
   const dialogTitle = image.metadata.title ?? "Artwork";
   const displayTitle = image.metadata.title ?? "Untitled";
+  const [isHovered, setIsHovered] = useState(false);
 
   const imageContent = (
     <motion.div
       layout
       initial={{ opacity: 0 }}
-      animate={{ opacity: isLoaded ? 1 : 0 }}
+      animate={{ opacity: 1 }}
       transition={{
         layout: { duration: 0.8, ease: "easeInOut" },
-        opacity: { delay: isLoaded ? index * 0.05 : 0, duration: 0.5 },
+        opacity: { delay: index * 0.1, duration: 0.5 },
       }}
       className={isActive ? "relative aspect-square" : "absolute"}
       style={
@@ -59,8 +53,8 @@ export function GalleryItem({
             }
           : undefined
       }
-      onMouseEnter={() => onHover(true)}
-      onMouseLeave={() => onHover(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="w-full h-full rounded-md overflow-hidden p-0 border cursor-pointer">
         {/* biome-ignore lint/performance/noImgElement: Next.js Image cannot easily support the randomly sized scatter layout without layout shift. */}
@@ -68,7 +62,6 @@ export function GalleryItem({
           src={imageUrl}
           alt={dialogTitle}
           className="w-full h-full object-cover"
-          onLoad={onLoad}
           loading="lazy"
         />
       </div>
@@ -121,6 +114,8 @@ export function GalleryItem({
     return imageContent;
   }
 
+  const artworkUrl = image.metadata.artwork_url;
+
   return (
     <Dialog>
       <DialogTrigger asChild>{imageContent}</DialogTrigger>
@@ -130,14 +125,27 @@ export function GalleryItem({
         className="p-0 border-0 w-auto h-auto max-w-[95vw] sm:max-w-[90vw] max-h-[90vh] sm:max-h-[90vh] overflow-auto bg-transparent place-items-center"
       >
         <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
-        <Image
-          src={imageUrl}
-          alt={dialogTitle}
-          width={1200}
-          height={1200}
-          className="rounded-lg max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain"
-          unoptimized
-        />
+        <div className="relative">
+          <img
+            src={imageUrl}
+            alt={dialogTitle}
+            loading="lazy"
+            className="rounded-lg max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain"
+          />
+          {artworkUrl && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+              <Button asChild variant="secondary" size="sm">
+                <Link
+                  href={artworkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Details
+                </Link>
+              </Button>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
