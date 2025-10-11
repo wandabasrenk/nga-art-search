@@ -1,6 +1,6 @@
 const FEEDBACK_STORAGE_KEY = "nga-feedback-submitted";
 
-export function hasSentFeedback(): boolean {
+export function hasSentFeedback() {
   if (typeof window === "undefined") return false;
 
   try {
@@ -10,7 +10,7 @@ export function hasSentFeedback(): boolean {
   }
 }
 
-export function markFeedbackSent(): void {
+export function markFeedbackSent() {
   if (typeof window === "undefined") return;
 
   try {

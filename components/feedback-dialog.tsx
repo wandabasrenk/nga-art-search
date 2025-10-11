@@ -99,7 +99,11 @@ export function FeedbackDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="transition-colors">
+        <Button
+          variant="ghost"
+          className="transition-colors"
+          aria-label="Feedback"
+        >
           Feedback
         </Button>
       </DialogTrigger>

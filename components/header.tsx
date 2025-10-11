@@ -33,6 +33,9 @@ const NAVIGATION_LINKS = [
 const SHEET_NAV_ITEM_CLASS =
   "block w-full px-0 py-2 text-left text-sm font-medium transition-colors";
 
+const DESKTOP_NAV_ITEM_CLASS =
+  "text-sm font-medium transition-colors hover:text-foreground/80";
+
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -58,13 +61,14 @@ export function Header() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
+              className={DESKTOP_NAV_ITEM_CLASS}
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4 lg:gap-6">
+        <div className="hidden md:flex items-center gap-1">
           <InfoDialog open={infoOpen} onOpenChange={setInfoOpen} />
           <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
         </div>
@@ -72,7 +76,7 @@ export function Header() {
         <Button
           variant="ghost"
           size="icon"
-          sr-only="Menu"
+          aria-label="Menu"
           className="md:hidden"
           onClick={() => setSheetOpen(true)}
         >

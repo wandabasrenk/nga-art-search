@@ -28,7 +28,7 @@ export function InfoDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="transition-colors">
+        <Button variant="ghost" className="transition-colors" aria-label="Info">
           Info
         </Button>
       </DialogTrigger>
