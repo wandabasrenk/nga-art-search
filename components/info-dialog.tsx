@@ -28,22 +28,18 @@ export function InfoDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-xs lg:text-sm text-foreground/70 transition-colors hover:text-foreground hover:bg-transparent px-0"
-        >
+        <Button variant="ghost" className="transition-colors">
           Info
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogTitle>About This Demo</DialogTitle>
         <div className="mt-4 space-y-4">
-          <p className="text-sm text-foreground/80 leading-relaxed">
+          <p className="leading-relaxed">
             This demo showcases over 50,000 artworks from the National Gallery
             of Art's open-access collection, searchable using natural language.
           </p>
-          <p className="text-sm text-foreground/80 leading-relaxed">
+          <p className="leading-relaxed">
             Powered by Mixedbread Search API and our multimodal Omni model for
             accurate semantic retrieval.
           </p>

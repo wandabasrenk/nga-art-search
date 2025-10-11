@@ -11,7 +11,7 @@ export const feedbackSchema = z
   .refine(
     (data) => data.rating || (data.message && data.message.trim().length > 0),
     {
-      message: "Please provide a rating or message",
+      error: "Please provide a rating or message",
       path: ["rating"],
     },
   );

@@ -30,6 +30,9 @@ const NAVIGATION_LINKS = [
   },
 ] as const;
 
+const SHEET_NAV_ITEM_CLASS =
+  "block w-full px-0 py-2 text-left text-sm font-medium transition-colors";
+
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -55,7 +58,6 @@ export function Header() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs lg:text-sm text-foreground/70 transition-colors hover:text-foreground whitespace-nowrap"
             >
               {link.label}
             </Link>
@@ -69,7 +71,8 @@ export function Header() {
 
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
+          sr-only="Menu"
           className="md:hidden"
           onClick={() => setSheetOpen(true)}
         >
@@ -89,7 +92,7 @@ export function Header() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-foreground/80 transition-all hover:text-foreground hover:bg-accent rounded-md py-2.5"
+                  className={SHEET_NAV_ITEM_CLASS}
                   onClick={() => setSheetOpen(false)}
                 >
                   {link.label}
@@ -97,7 +100,7 @@ export function Header() {
               ))}
               <button
                 type="button"
-                className="text-sm text-foreground/80 transition-all hover:text-foreground hover:bg-accent rounded-md py-2.5 text-left"
+                className={SHEET_NAV_ITEM_CLASS}
                 onClick={() => {
                   setSheetOpen(false);
                   setTimeout(() => setInfoOpen(true), 150);
@@ -107,7 +110,7 @@ export function Header() {
               </button>
               <button
                 type="button"
-                className="text-sm text-foreground/80 transition-all hover:text-foreground hover:bg-accent rounded-md py-2.5 text-left"
+                className={SHEET_NAV_ITEM_CLASS}
                 onClick={() => {
                   setSheetOpen(false);
                   setTimeout(() => setFeedbackOpen(true), 150);

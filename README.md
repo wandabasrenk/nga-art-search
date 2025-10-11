@@ -1,7 +1,7 @@
 # Mixedbread Art Search
 
 **Discover over 50,000 artworks from the National Gallery of Art with natural language search.**  
-This demo is powered by the [Mixedbread Search API](https://www.mixedbread.com/docs/stores/overview), which uses our multimodal model **Omni** to retrieve artworks that match your queries.
+This demo is powered by the [Mixedbread Search](https://www.mixedbread.com/docs/stores/overview), which uses our multimodal model **Omni** to retrieve artworks that match your queries.
 
 ---
 

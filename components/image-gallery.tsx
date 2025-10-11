@@ -2,7 +2,7 @@
 
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import type { MouseEvent } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { GalleryItem } from "@/components/gallery-item";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { generateRandomPositions } from "@/lib/gallery-layout";
@@ -26,7 +26,7 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const isCompactViewport = useIsMobile(1024);
   const shouldRenderScatter = !isCompactViewport;
-  const [_, setLoadedImages] = useState<Set<string>>(new Set());
+  const loadedImagesRef = useRef<Set<string>>(new Set());
 
   const randomPositions = useMemo(
     () =>
@@ -37,7 +37,9 @@ export function ImageGallery({
   );
 
   const handleImageLoad = useCallback((imageId: string) => {
-    setLoadedImages((prev) => new Set(prev).add(imageId));
+    if (!loadedImagesRef.current.has(imageId)) {
+      loadedImagesRef.current.add(imageId);
+    }
   }, []);
 
   const renderItems = (active: boolean) =>
