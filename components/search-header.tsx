@@ -15,19 +15,15 @@ interface SearchHeaderProps {
   onSuggestionClick: (suggestion: string) => void;
 }
 
-interface SearchInputProps {
-  query: string;
-  isLoading: boolean;
-  onQueryChange: (value: string) => void;
-  disabled?: boolean;
-}
-
 function SearchInput({
   query,
   isLoading,
   onQueryChange,
-  disabled = false,
-}: SearchInputProps) {
+}: {
+  query: string;
+  isLoading: boolean;
+  onQueryChange: (value: string) => void;
+}) {
   return (
     <div className="relative">
       <Input
@@ -36,14 +32,14 @@ function SearchInput({
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="Search for art..."
         className="!bg-background/70 tracking-tighter backdrop-blur-sm"
-        disabled={disabled || isLoading}
+        disabled={isLoading}
       />
       <Button
         type="submit"
         size="icon"
         variant="ghost"
         className="absolute right-2 top-1/2 -translate-y-1/2"
-        disabled={disabled || isLoading}
+        disabled={isLoading}
         aria-label="Search"
         title="Search"
       >
@@ -133,20 +129,6 @@ export function SearchHeader({
               {suggestion}
             </Button>
           ))}
-        </motion.div>
-        <motion.div
-          animate={{ opacity: isActive ? 0 : 1 }}
-          transition={{
-            duration: 0.3,
-            delay: isActive ? 0.4 : 0,
-            ease: "easeInOut",
-          }}
-          className="mt-4 text-center text-xs text-muted-foreground"
-        >
-          <p>
-            Search through over 50,000 images from the National Gallery of Art
-            public collection.
-          </p>
         </motion.div>
       </div>
 

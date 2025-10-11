@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 
 import { Header } from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,6 +35,7 @@ export default function RootLayout({
         >
           <Header />
           <main>{children}</main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

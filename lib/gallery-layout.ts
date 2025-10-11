@@ -3,7 +3,7 @@ import type { Position } from "@/lib/types";
 function checkOverlap(
   rect1: { x: number; y: number; size: number },
   rect2: { x: number; y: number; width: number; height: number },
-  padding = 0
+  padding = 0,
 ): boolean {
   return !(
     rect1.x + rect1.size + padding < rect2.x ||
@@ -42,7 +42,6 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
   const maxSize = 280;
   const marginLeft = 15;
   const marginRight = 15;
-  
 
   const vw = typeof window !== "undefined" ? window.innerWidth : 1920;
   const vh = typeof window !== "undefined" ? window.innerHeight : 1080;
@@ -73,7 +72,7 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
       const sizeNorm = halton(sequenceIndex, 5);
       const dimensionCap = Math.max(
         1,
-        Math.min(availableWidth, availableHeight)
+        Math.min(availableWidth, availableHeight),
       );
       const maxAllowedSize = Math.min(maxSize, dimensionCap);
       const minPreferredSize = Math.max(120, Math.min(minSize, maxAllowedSize));
@@ -85,7 +84,7 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
       const size = clamp(
         baseSize + (Math.random() - 0.5) * jitterWindow,
         minAllowedSize,
-        maxAllowedSize
+        maxAllowedSize,
       );
 
       const xNorm = halton(sequenceIndex, 2);
@@ -110,8 +109,8 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
         checkOverlap(
           proposed,
           { x: pos.x, y: pos.y, width: pos.size, height: pos.size },
-          padding
-        )
+          padding,
+        ),
       );
 
       const overlapsExclusion = checkOverlap(proposed, exclusionZone, padding);
@@ -132,7 +131,7 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
     const fallbackSize = clamp(
       minSize,
       120,
-      Math.min(maxSize, Math.min(availableWidth, availableHeight))
+      Math.min(maxSize, Math.min(availableWidth, availableHeight)),
     );
 
     let fallbackPos: Position | null = null;
@@ -153,8 +152,8 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
         checkOverlap(
           testPos,
           { x: pos.x, y: pos.y, width: pos.size, height: pos.size },
-          padding
-        )
+          padding,
+        ),
       );
 
       if (!overlapsImages && !checkOverlap(testPos, exclusionZone, padding)) {
@@ -191,12 +190,12 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
           x: clamp(
             centerX + offsetX - fallbackSize / 2,
             marginLeft,
-            vw - marginRight - fallbackSize
+            vw - marginRight - fallbackSize,
           ),
           y: clamp(
             centerY + offsetY - fallbackSize / 2,
             marginTop,
-            vh - marginBottom - fallbackSize
+            vh - marginBottom - fallbackSize,
           ),
           size: fallbackSize,
         } satisfies Position;
@@ -204,7 +203,7 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
         const overlapsExclusion = checkOverlap(
           candidate,
           exclusionZone,
-          padding
+          padding,
         );
 
         if (overlapsExclusion) {
@@ -215,8 +214,8 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
           checkOverlap(
             candidate,
             { x: pos.x, y: pos.y, width: pos.size, height: pos.size },
-            padding * 0.5
-          )
+            padding * 0.5,
+          ),
         );
 
         if (!overlapsImages) {
@@ -235,12 +234,12 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
             x: clamp(
               exclusionZone.x + exclusionZone.width / 2 - fallbackSize / 2,
               marginLeft,
-              vw - marginRight - fallbackSize
+              vw - marginRight - fallbackSize,
             ),
             y: clamp(
               exclusionZone.y - fallbackSize - padding,
               marginTop,
-              vh - marginBottom - fallbackSize
+              vh - marginBottom - fallbackSize,
             ),
             size: fallbackSize,
           },
@@ -248,12 +247,12 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
             x: clamp(
               exclusionZone.x + exclusionZone.width / 2 - fallbackSize / 2,
               marginLeft,
-              vw - marginRight - fallbackSize
+              vw - marginRight - fallbackSize,
             ),
             y: clamp(
               exclusionZone.y + exclusionZone.height + padding,
               marginTop,
-              vh - marginBottom - fallbackSize
+              vh - marginBottom - fallbackSize,
             ),
             size: fallbackSize,
           },
@@ -261,12 +260,12 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
             x: clamp(
               exclusionZone.x - fallbackSize - padding,
               marginLeft,
-              vw - marginRight - fallbackSize
+              vw - marginRight - fallbackSize,
             ),
             y: clamp(
               exclusionZone.y + exclusionZone.height / 2 - fallbackSize / 2,
               marginTop,
-              vh - marginBottom - fallbackSize
+              vh - marginBottom - fallbackSize,
             ),
             size: fallbackSize,
           },
@@ -274,19 +273,19 @@ export function generateRandomPositions(count: number, seed = 0): Position[] {
             x: clamp(
               exclusionZone.x + exclusionZone.width + padding,
               marginLeft,
-              vw - marginRight - fallbackSize
+              vw - marginRight - fallbackSize,
             ),
             y: clamp(
               exclusionZone.y + exclusionZone.height / 2 - fallbackSize / 2,
               marginTop,
-              vh - marginBottom - fallbackSize
+              vh - marginBottom - fallbackSize,
             ),
             size: fallbackSize,
           },
         ];
 
         const firstSafeCandidate = candidatePositions.find(
-          (candidate) => !checkOverlap(candidate, exclusionZone, padding)
+          (candidate) => !checkOverlap(candidate, exclusionZone, padding),
         );
 
         if (firstSafeCandidate) {
