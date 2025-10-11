@@ -133,6 +133,7 @@ export function GalleryItem({
       >
         <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
         <div className="relative">
+          {/* biome-ignore lint/performance/noImgElement: Dialog image needs flexible sizing without layout shift */}
           <img
             src={imageUrl}
             alt={dialogTitle}
