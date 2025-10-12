@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Toggle } from "@/components/ui/toggle";
 
 interface SearchHeaderProps {
   query: string;
@@ -13,25 +14,51 @@ interface SearchHeaderProps {
   onSearch: (event: FormEvent) => void;
   isActive: boolean;
   onSuggestionClick: (suggestion: string) => void;
+  language: "en" | "cn";
+  onLanguageChange: (language: "en" | "cn") => void;
 }
 
 function SearchInput({
   query,
   isLoading,
   onQueryChange,
+  language,
+  onLanguageChange,
 }: {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
+  language: "en" | "cn";
+  onLanguageChange: (language: "en" | "cn") => void;
 }) {
   return (
     <div className="relative">
+      <div className="absolute left-2 top-1/2 -translate-y-1/2 flex gap-1 z-10">
+        <Toggle
+          pressed={language === "en"}
+          onPressedChange={() => onLanguageChange("en")}
+          variant="outline"
+          size="sm"
+          className="font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-7 px-1.5"
+        >
+          EN
+        </Toggle>
+        <Toggle
+          pressed={language === "cn"}
+          onPressedChange={() => onLanguageChange("cn")}
+          variant="outline"
+          size="sm"
+          className="font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-7 px-1.5"
+        >
+          CN
+        </Toggle>
+      </div>
       <Input
         type="text"
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="Search for art..."
-        className="!bg-background/70 tracking-tighter backdrop-blur-sm"
+        className="!bg-background/70 tracking-tighter backdrop-blur-sm pl-24 pr-12"
         disabled={isLoading}
       />
       <Button
@@ -60,8 +87,10 @@ export function SearchHeader({
   onSearch,
   isActive,
   onSuggestionClick,
+  language,
+  onLanguageChange,
 }: SearchHeaderProps) {
-  const suggestions = [
+  const suggestionsEn = [
     "Still life paintings",
     "Paintings of flowers",
     "Woodcuts of landscapes",
@@ -70,6 +99,17 @@ export function SearchHeader({
     "Paintings of the sea",
     "Ancient coins",
   ];
+
+  const suggestionsCn = [
+    "火车在行驶",
+    "动物雕塑",
+    "房屋建筑",
+    "花卉画",
+    "风景木刻",
+    "古代钱币",
+  ];
+
+  const suggestions = language === "en" ? suggestionsEn : suggestionsCn;
 
   return (
     <>
@@ -104,12 +144,14 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
+            language={language}
+            onLanguageChange={onLanguageChange}
           />
         </motion.form>
 
         {/* Suggestions - fade out last (0.4s delay) */}
         <motion.div
-          className="flex flex-wrap justify-center gap-2 mt-4"
+          className="flex flex-wrap justify-center gap-2 mt-4 max-w-full"
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
@@ -124,7 +166,7 @@ export function SearchHeader({
               variant="outline"
               size="sm"
               onClick={() => onSuggestionClick(suggestion)}
-              className="font-light bg-background/70 text-xs sm:text-sm backdrop-blur-sm"
+              className="font-light bg-background/70 text-xs sm:text-sm backdrop-blur-sm whitespace-nowrap"
             >
               {suggestion}
             </Button>
@@ -148,6 +190,8 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
+            language={language}
+            onLanguageChange={onLanguageChange}
           />
         </form>
       </motion.div>
