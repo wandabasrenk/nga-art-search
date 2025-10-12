@@ -18,7 +18,7 @@ export default function Home() {
   const viewContext = use(ViewContext);
   if (!viewContext) throw new Error("ViewContext is required");
 
-  const { language, translateQuery, defaultQueryEn } = languageContext;
+  const { translateQuery, defaultQueryEn } = languageContext;
   const { setIsActive } = viewContext;
 
   const [query, setQuery] = useState(defaultQueryEn);
@@ -34,7 +34,7 @@ export default function Home() {
       const translatedQuery = translateQuery(currentQuery);
       return translatedQuery !== currentQuery ? translatedQuery : currentQuery;
     });
-  }, [language, translateQuery]);
+  }, [translateQuery]);
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -62,9 +62,7 @@ export default function Home() {
         onSuggestionClick={handleSuggestionClick}
       />
 
-      {searchQuery && (
-        <ImageGallery images={results} isLoading={isLoading} />
-      )}
+      {searchQuery && <ImageGallery images={results} isLoading={isLoading} />}
     </div>
   );
 }
