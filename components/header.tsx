@@ -3,7 +3,7 @@
 import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { use, useState } from "react";
 
 import { FeedbackDialog } from "@/components/feedback-dialog";
 import { InfoDialog } from "@/components/info-dialog";
@@ -14,6 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { LanguageContext } from "@/contexts/language-context";
 
 const NAVIGATION_LINKS = [
   {
@@ -40,6 +41,18 @@ export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+
+  const context = use(LanguageContext);
+  if (!context) throw new Error("LanguageContext is required");
+
+  const { language, setLanguage } = context;
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "cn" : "en");
+  };
+
+  // Show opposite language
+  const displayLanguage = language === "en" ? "CN" : "EN";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -73,15 +86,24 @@ export function Header() {
           <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Menu"
-          className="md:hidden"
-          onClick={() => setSheetOpen(true)}
-        >
-          <MenuIcon className="size-5" />
-        </Button>
+        <div className="flex md:hidden items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleLanguage}
+            className="font-light text-xs h-8 min-w-12 px-2"
+          >
+            {displayLanguage}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Menu"
+            onClick={() => setSheetOpen(true)}
+          >
+            <MenuIcon className="size-5" />
+          </Button>
+        </div>
 
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetContent side="right" className="w-[300px] sm:w-[350px]">

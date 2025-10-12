@@ -3,72 +3,75 @@
 import { Loader2, Send } from "lucide-react";
 import { motion } from "motion/react";
 import type { FormEvent } from "react";
+import { use } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
+import { LanguageContext } from "@/contexts/language-context";
+import { ViewContext } from "@/contexts/view-context";
 
 interface SearchHeaderProps {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
   onSearch: (event: FormEvent) => void;
-  isActive: boolean;
   onSuggestionClick: (suggestion: string) => void;
-  language: "en" | "cn";
-  onLanguageChange: (language: "en" | "cn") => void;
 }
 
 function SearchInput({
   query,
   isLoading,
   onQueryChange,
-  language,
-  onLanguageChange,
+  showLanguageToggle = true,
 }: {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
-  language: "en" | "cn";
-  onLanguageChange: (language: "en" | "cn") => void;
+  showLanguageToggle?: boolean;
 }) {
+  const context = use(LanguageContext);
+  if (!context) throw new Error("LanguageContext is required");
+
+  const { language, setLanguage } = context;
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "cn" : "en");
+  };
+
+  // Show opposite language
+  const displayLanguage = language === "en" ? "CN" : "EN";
+
   return (
-    <div className="relative">
-      <div className="absolute left-2 top-1/2 -translate-y-1/2 flex gap-1 z-10">
-        <Toggle
-          pressed={language === "en"}
-          onPressedChange={() => onLanguageChange("en")}
-          variant="outline"
-          size="sm"
-          className="font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-7 px-1.5"
-        >
-          EN
-        </Toggle>
-        <Toggle
-          pressed={language === "cn"}
-          onPressedChange={() => onLanguageChange("cn")}
-          variant="outline"
-          size="sm"
-          className="font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-7 px-1.5"
-        >
-          CN
-        </Toggle>
+    <div className="flex items-center gap-2 w-full">
+      <div className="relative flex-1">
+        {showLanguageToggle && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={toggleLanguage}
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-10 px-2"
+          >
+            {displayLanguage}
+          </Button>
+        )}
+        <Input
+          type="text"
+          value={query}
+          onChange={(e) => onQueryChange(e.target.value)}
+          placeholder="Search for art..."
+          className={`!bg-background/70 tracking-tighter backdrop-blur-sm ${showLanguageToggle ? "pl-4 md:pl-14" : "pl-4"}`}
+          disabled={isLoading}
+        />
       </div>
-      <Input
-        type="text"
-        value={query}
-        onChange={(e) => onQueryChange(e.target.value)}
-        placeholder="Search for art..."
-        className="!bg-background/70 tracking-tighter backdrop-blur-sm pl-24 pr-12"
-        disabled={isLoading}
-      />
       <Button
         type="submit"
         size="icon"
-        variant="ghost"
-        className="absolute right-2 top-1/2 -translate-y-1/2"
+        variant="outline"
         disabled={isLoading}
         aria-label="Search"
         title="Search"
+        className="flex-shrink-0 bg-background/70 backdrop-blur-sm"
       >
         {isLoading ? (
           <Loader2 className="size-4 animate-spin text-muted-foreground" />
@@ -85,11 +88,16 @@ export function SearchHeader({
   isLoading,
   onQueryChange,
   onSearch,
-  isActive,
   onSuggestionClick,
-  language,
-  onLanguageChange,
 }: SearchHeaderProps) {
+  const languageContext = use(LanguageContext);
+  if (!languageContext) throw new Error("LanguageContext is required");
+
+  const viewContext = use(ViewContext);
+  if (!viewContext) throw new Error("ViewContext is required");
+
+  const { language } = languageContext;
+  const { isActive } = viewContext;
   const suggestionsEn = [
     "Still life paintings",
     "Paintings of flowers",
@@ -101,11 +109,12 @@ export function SearchHeader({
   ];
 
   const suggestionsCn = [
-    "火车在行驶",
-    "动物雕塑",
-    "房屋建筑",
+    "静物画",
     "花卉画",
     "风景木刻",
+    "女性肖像",
+    "动物雕塑",
+    "海景画",
     "古代钱币",
   ];
 
@@ -144,8 +153,6 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
-            language={language}
-            onLanguageChange={onLanguageChange}
           />
         </motion.form>
 
@@ -166,7 +173,7 @@ export function SearchHeader({
               variant="outline"
               size="sm"
               onClick={() => onSuggestionClick(suggestion)}
-              className="font-light bg-background/70 text-xs sm:text-sm backdrop-blur-sm whitespace-nowrap"
+              className="font-light bg-background/70 px-1 text-xs sm:text-sm backdrop-blur-sm whitespace-nowrap min-w-34"
             >
               {suggestion}
             </Button>
@@ -190,8 +197,7 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
-            language={language}
-            onLanguageChange={onLanguageChange}
+            showLanguageToggle={false}
           />
         </form>
       </motion.div>

@@ -2,8 +2,9 @@
 
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import type { MouseEvent } from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { use, useCallback, useMemo, useRef } from "react";
 import { GalleryItem } from "@/components/gallery-item";
+import { ViewContext } from "@/contexts/view-context";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { generateRandomPositions } from "@/lib/gallery-layout";
 import type { SearchResult } from "@/lib/types";
@@ -12,18 +13,14 @@ import { cn } from "@/lib/utils";
 interface ImageGalleryProps {
   images: SearchResult[];
   isLoading: boolean;
-  isActive: boolean;
-  scatterSeed: number;
-  onBackToScatter: () => void;
 }
 
-export function ImageGallery({
-  images,
-  isLoading,
-  isActive,
-  scatterSeed,
-  onBackToScatter,
-}: ImageGalleryProps) {
+export function ImageGallery({ images, isLoading }: ImageGalleryProps) {
+  const viewContext = use(ViewContext);
+  if (!viewContext) throw new Error("ViewContext is required");
+
+  const { isActive, scatterSeed, regenerateScatter } = viewContext;
+
   const isCompactViewport = useIsMobile(1024);
   const shouldRenderScatter = !isCompactViewport;
   const loadedImagesRef = useRef<Set<string>>(new Set());
@@ -57,10 +54,10 @@ export function ImageGallery({
   const handleOverlayClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
       if (event.target === event.currentTarget) {
-        onBackToScatter();
+        regenerateScatter();
       }
     },
-    [onBackToScatter],
+    [regenerateScatter],
   );
 
   const handleGridClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
