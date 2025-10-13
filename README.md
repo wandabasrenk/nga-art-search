@@ -82,7 +82,7 @@ async function main() {
   const apiKey = process.env.MXBAI_API_KEY;
   if (!apiKey) throw new Error("Missing MXBAI_API_KEY");
 
-  const mxbai = new Mixedbread({ apiKey }); // Pass the API key
+  const mxbai = new Mixedbread({ apiKey });
 
   const storeName = "your-store";
 
@@ -92,7 +92,7 @@ async function main() {
   for (const filename of files) {
     const filePath = path.join(imagesDir, filename);
     const uploaded = await mxbai.stores.files.uploadAndPoll({
-      storeIdentifier: storeName, // Use storeName instead of store.name
+      storeIdentifier: storeName,
       file: createReadStream(filePath),
       body: { filename, metadata: { source: "NGA", path: filePath } },
     });
