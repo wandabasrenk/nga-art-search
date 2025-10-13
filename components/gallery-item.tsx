@@ -40,7 +40,7 @@ export function GalleryItem({
       animate={{ opacity: 1 }}
       transition={{
         layout: { duration: 0.8, ease: "easeInOut" },
-        opacity: { delay: index * 0.2, duration: 0.5 },
+        opacity: { delay: index * 0.25, duration: 0.5 },
       }}
       className={isActive ? "relative aspect-square" : "absolute"}
       style={
