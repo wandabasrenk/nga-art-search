@@ -84,7 +84,7 @@ async function main() {
 
   const mxbai = new Mixedbread({ apiKey }); // Pass the API key
 
-  const storeName = "nga-public-images";
+  const storeName = "your-store";
 
   const imagesDir = path.resolve("./data/images");
   const files = (await readdir(imagesDir)).filter((f) => /\.png$/i.test(f));
@@ -109,7 +109,6 @@ main().catch((err) => {
 Run with Bun:
 
 ```bash
-# after saving scripts/upload-pngs.ts
 bun scripts/upload-pngs.ts
 ```
 
