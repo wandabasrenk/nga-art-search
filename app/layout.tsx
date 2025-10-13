@@ -4,8 +4,8 @@ import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { Header } from "@/components/header";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "@/lib/providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,16 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          disableTransitionOnChange
-          enableSystem
-        >
+        <Providers>
           <Header />
           <main>{children}</main>
           <Toaster />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

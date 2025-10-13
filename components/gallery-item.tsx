@@ -19,7 +19,6 @@ interface GalleryItemProps {
   index: number;
   isActive: boolean;
   position?: Position;
-  onLoad: () => void;
 }
 
 export function GalleryItem({
@@ -27,7 +26,6 @@ export function GalleryItem({
   index,
   isActive,
   position,
-  onLoad,
 }: GalleryItemProps) {
   const isMobile = useIsMobile();
   const imageUrl = image.metadata.image_url ?? "";
@@ -42,7 +40,7 @@ export function GalleryItem({
       animate={{ opacity: 1 }}
       transition={{
         layout: { duration: 0.8, ease: "easeInOut" },
-        opacity: { delay: index * 0.15, duration: 0.5 },
+        opacity: { delay: index * 0.25, duration: 0.5 },
       }}
       className={isActive ? "relative aspect-square" : "absolute"}
       style={
@@ -65,7 +63,6 @@ export function GalleryItem({
           alt={dialogTitle}
           className="w-full h-full object-cover"
           loading="lazy"
-          onLoad={onLoad}
         />
       </div>
 

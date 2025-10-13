@@ -1,25 +1,34 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { ImageGallery } from "@/components/image-gallery";
 import { SearchHeader } from "@/components/search-header";
+import { DEFAULT_QUERY_EN, useLanguage } from "@/contexts/language-context";
+import { useView } from "@/contexts/view-context";
 import { fetcher } from "@/lib/fetcher";
 import type { SearchResponse } from "@/lib/types";
 
 export default function Home() {
-  const [query, setQuery] = useState("Paintings of winter landscapes");
-  const [searchQuery, setSearchQuery] = useState(
-    "Paintings of winter landscapes",
-  );
-  const [isActive, setIsActive] = useState(false);
-  const [scatterSeed, setScatterSeed] = useState(0);
+  const { translateQuery } = useLanguage();
+  const { setIsActive } = useView();
+
+  const [query, setQuery] = useState(DEFAULT_QUERY_EN);
+  const [searchQuery, setSearchQuery] = useState(DEFAULT_QUERY_EN);
+
   const { data, isLoading } = useSWR<SearchResponse>(
     searchQuery ? `/api/search?q=${encodeURIComponent(searchQuery)}` : null,
     fetcher,
   );
+
+  useEffect(() => {
+    setQuery((currentQuery) => {
+      const translatedQuery = translateQuery(currentQuery);
+      return translatedQuery !== currentQuery ? translatedQuery : currentQuery;
+    });
+  }, [translateQuery]);
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -35,11 +44,6 @@ export default function Home() {
     setIsActive(true);
   };
 
-  const handleBackToScatter = () => {
-    setScatterSeed((prev) => prev + 1);
-    setIsActive(false);
-  };
-
   const results = data?.results || [];
 
   return (
@@ -49,19 +53,10 @@ export default function Home() {
         isLoading={isLoading}
         onQueryChange={setQuery}
         onSearch={handleSearch}
-        isActive={isActive}
         onSuggestionClick={handleSuggestionClick}
       />
 
-      {searchQuery && (
-        <ImageGallery
-          images={results}
-          isLoading={isLoading}
-          isActive={isActive}
-          scatterSeed={scatterSeed}
-          onBackToScatter={handleBackToScatter}
-        />
-      )}
+      {searchQuery && <ImageGallery images={results} isLoading={isLoading} />}
     </div>
   );
 }

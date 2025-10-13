@@ -5,13 +5,21 @@ import { motion } from "motion/react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/contexts/language-context";
+import { useView } from "@/contexts/view-context";
+
+const ANIMATION_DELAYS = {
+  TITLE: 0,
+  INPUT: 0.2,
+  SUGGESTIONS: 0.4,
+  BOTTOM_INPUT: 0.7,
+} as const;
 
 interface SearchHeaderProps {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
   onSearch: (event: FormEvent) => void;
-  isActive: boolean;
   onSuggestionClick: (suggestion: string) => void;
 }
 
@@ -19,29 +27,47 @@ function SearchInput({
   query,
   isLoading,
   onQueryChange,
+  showLanguageToggle = true,
 }: {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
+  showLanguageToggle?: boolean;
 }) {
+  const { toggleLanguage, displayLanguage } = useLanguage();
+
   return (
-    <div className="relative">
-      <Input
-        type="text"
-        value={query}
-        onChange={(e) => onQueryChange(e.target.value)}
-        placeholder="Search for art..."
-        className="!bg-background/70 tracking-tighter backdrop-blur-sm"
-        disabled={isLoading}
-      />
+    <div className="flex items-center gap-2 w-full">
+      <div className="relative flex-1">
+        {showLanguageToggle && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={toggleLanguage}
+            aria-label={`Switch to ${displayLanguage === "CN" ? "Chinese" : "English"}`}
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-10 px-2"
+          >
+            {displayLanguage}
+          </Button>
+        )}
+        <Input
+          type="text"
+          value={query}
+          onChange={(e) => onQueryChange(e.target.value)}
+          placeholder="Search for art..."
+          className={`!bg-background/70 tracking-tighter backdrop-blur-sm ${showLanguageToggle ? "pl-4 md:pl-14" : "pl-4"}`}
+          disabled={isLoading}
+        />
+      </div>
       <Button
         type="submit"
         size="icon"
-        variant="ghost"
-        className="absolute right-2 top-1/2 -translate-y-1/2"
+        variant="outline"
         disabled={isLoading}
         aria-label="Search"
         title="Search"
+        className="flex-shrink-0 bg-background/70 backdrop-blur-sm"
       >
         {isLoading ? (
           <Loader2 className="size-4 animate-spin text-muted-foreground" />
@@ -58,18 +84,10 @@ export function SearchHeader({
   isLoading,
   onQueryChange,
   onSearch,
-  isActive,
   onSuggestionClick,
 }: SearchHeaderProps) {
-  const suggestions = [
-    "Still life paintings",
-    "Paintings of flowers",
-    "Woodcuts of landscapes",
-    "Portraits of women",
-    "Sculptures of animals",
-    "Paintings of the sea",
-    "Ancient coins",
-  ];
+  const { suggestions } = useLanguage();
+  const { isActive } = useView();
 
   return (
     <>
@@ -83,20 +101,20 @@ export function SearchHeader({
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
-            delay: 0,
+            delay: ANIMATION_DELAYS.TITLE,
             ease: "easeInOut",
           }}
         >
           Discover art with <br /> natural language
         </motion.h1>
 
-        {/* Input - fades out second (0.2s delay) */}
+        {/* Input - fades out second */}
         <motion.form
           onSubmit={onSearch}
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
-            delay: isActive ? 0.2 : 0,
+            delay: isActive ? ANIMATION_DELAYS.INPUT : 0,
             ease: "easeInOut",
           }}
         >
@@ -107,13 +125,13 @@ export function SearchHeader({
           />
         </motion.form>
 
-        {/* Suggestions - fade out last (0.4s delay) */}
+        {/* Suggestions - fade out last */}
         <motion.div
-          className="flex flex-wrap justify-center gap-2 mt-4"
+          className="flex flex-wrap justify-center gap-2 mt-4 max-w-full"
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
-            delay: isActive ? 0.4 : 0,
+            delay: isActive ? ANIMATION_DELAYS.SUGGESTIONS : 0,
             ease: "easeInOut",
           }}
         >
@@ -124,7 +142,7 @@ export function SearchHeader({
               variant="outline"
               size="sm"
               onClick={() => onSuggestionClick(suggestion)}
-              className="font-light bg-background/70 text-xs sm:text-sm backdrop-blur-sm"
+              className="font-light bg-background/70 px-1 text-xs sm:text-sm backdrop-blur-sm whitespace-nowrap min-w-34"
             >
               {suggestion}
             </Button>
@@ -138,7 +156,7 @@ export function SearchHeader({
         animate={{ opacity: isActive ? 1 : 0 }}
         transition={{
           duration: 0.3,
-          delay: isActive ? 0.7 : 0,
+          delay: isActive ? ANIMATION_DELAYS.BOTTOM_INPUT : 0,
           ease: "easeInOut",
         }}
         style={{ pointerEvents: isActive ? "auto" : "none" }}
@@ -148,6 +166,7 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
+            showLanguageToggle={false}
           />
         </form>
       </motion.div>
