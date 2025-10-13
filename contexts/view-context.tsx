@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { createContext, useCallback, useMemo, useState } from "react";
+import { createContext, use, useCallback, useMemo, useState } from "react";
 
 interface ViewContextValue {
   isActive: boolean;
@@ -32,4 +32,11 @@ export function ViewProvider({ children }: { children: ReactNode }) {
   );
 
   return <ViewContext.Provider value={value}>{children}</ViewContext.Provider>;
+}
+
+// Custom hook for consuming view context
+export function useView() {
+  const context = use(ViewContext);
+  if (!context) throw new Error("ViewContext is required");
+  return context;
 }

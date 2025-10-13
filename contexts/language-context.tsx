@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { createContext, useCallback, useMemo, useState } from "react";
+import { createContext, use, useCallback, useMemo, useState } from "react";
 
 const DEFAULT_QUERY_EN = "Paintings of winter landscapes";
 const DEFAULT_QUERY_CN = "冬季风景画";
@@ -74,4 +74,26 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       {children}
     </LanguageContext.Provider>
   );
+}
+
+// Custom hooks for consuming language context
+export function useLanguage() {
+  const context = use(LanguageContext);
+  if (!context) throw new Error("LanguageContext is required");
+  return context;
+}
+
+export function useLanguageToggle() {
+  const context = use(LanguageContext);
+  if (!context) throw new Error("LanguageContext is required");
+
+  const { language, setLanguage } = context;
+
+  const toggleLanguage = useCallback(() => {
+    setLanguage(language === "en" ? "cn" : "en");
+  }, [language, setLanguage]);
+
+  const displayLanguage = language === "en" ? "CN" : "EN";
+
+  return { toggleLanguage, displayLanguage };
 }

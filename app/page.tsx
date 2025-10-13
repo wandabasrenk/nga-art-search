@@ -1,25 +1,19 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { ImageGallery } from "@/components/image-gallery";
 import { SearchHeader } from "@/components/search-header";
-import { LanguageContext } from "@/contexts/language-context";
-import { ViewContext } from "@/contexts/view-context";
+import { useLanguage } from "@/contexts/language-context";
+import { useView } from "@/contexts/view-context";
 import { fetcher } from "@/lib/fetcher";
 import type { SearchResponse } from "@/lib/types";
 
 export default function Home() {
-  const languageContext = use(LanguageContext);
-  if (!languageContext) throw new Error("LanguageContext is required");
-
-  const viewContext = use(ViewContext);
-  if (!viewContext) throw new Error("ViewContext is required");
-
-  const { translateQuery, defaultQueryEn } = languageContext;
-  const { setIsActive } = viewContext;
+  const { translateQuery, defaultQueryEn } = useLanguage();
+  const { setIsActive } = useView();
 
   const [query, setQuery] = useState(defaultQueryEn);
   const [searchQuery, setSearchQuery] = useState(defaultQueryEn);

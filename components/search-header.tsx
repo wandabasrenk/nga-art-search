@@ -3,11 +3,10 @@
 import { Loader2, Send } from "lucide-react";
 import { motion } from "motion/react";
 import type { FormEvent } from "react";
-import { use } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LanguageContext } from "@/contexts/language-context";
-import { ViewContext } from "@/contexts/view-context";
+import { useLanguage, useLanguageToggle } from "@/contexts/language-context";
+import { useView } from "@/contexts/view-context";
 
 interface SearchHeaderProps {
   query: string;
@@ -28,17 +27,7 @@ function SearchInput({
   onQueryChange: (value: string) => void;
   showLanguageToggle?: boolean;
 }) {
-  const context = use(LanguageContext);
-  if (!context) throw new Error("LanguageContext is required");
-
-  const { language, setLanguage } = context;
-
-  const toggleLanguage = () => {
-    setLanguage(language === "en" ? "cn" : "en");
-  };
-
-  // Show opposite language
-  const displayLanguage = language === "en" ? "CN" : "EN";
+  const { toggleLanguage, displayLanguage } = useLanguageToggle();
 
   return (
     <div className="flex items-center gap-2 w-full">
@@ -49,6 +38,7 @@ function SearchInput({
             variant="outline"
             size="sm"
             onClick={toggleLanguage}
+            aria-label={`Switch to ${displayLanguage === "CN" ? "Chinese" : "English"}`}
             className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-10 px-2"
           >
             {displayLanguage}
@@ -89,14 +79,8 @@ export function SearchHeader({
   onSearch,
   onSuggestionClick,
 }: SearchHeaderProps) {
-  const languageContext = use(LanguageContext);
-  if (!languageContext) throw new Error("LanguageContext is required");
-
-  const viewContext = use(ViewContext);
-  if (!viewContext) throw new Error("ViewContext is required");
-
-  const { language } = languageContext;
-  const { isActive } = viewContext;
+  const { language } = useLanguage();
+  const { isActive } = useView();
   const suggestionsEn = [
     "Still life paintings",
     "Paintings of flowers",

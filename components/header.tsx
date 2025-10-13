@@ -3,7 +3,7 @@
 import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useState } from "react";
+import { useState } from "react";
 
 import { FeedbackDialog } from "@/components/feedback-dialog";
 import { InfoDialog } from "@/components/info-dialog";
@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { LanguageContext } from "@/contexts/language-context";
+import { useLanguageToggle } from "@/contexts/language-context";
 
 const NAVIGATION_LINKS = [
   {
@@ -42,17 +42,7 @@ export function Header() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
-  const context = use(LanguageContext);
-  if (!context) throw new Error("LanguageContext is required");
-
-  const { language, setLanguage } = context;
-
-  const toggleLanguage = () => {
-    setLanguage(language === "en" ? "cn" : "en");
-  };
-
-  // Show opposite language
-  const displayLanguage = language === "en" ? "CN" : "EN";
+  const { toggleLanguage, displayLanguage } = useLanguageToggle();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -91,6 +81,7 @@ export function Header() {
             variant="outline"
             size="sm"
             onClick={toggleLanguage}
+            aria-label={`Switch to ${displayLanguage === "CN" ? "Chinese" : "English"}`}
             className="font-light text-xs h-8 min-w-12 px-2"
           >
             {displayLanguage}
