@@ -7,6 +7,7 @@ interface ViewContextValue {
   isActive: boolean;
   scatterSeed: number;
   setIsActive: (active: boolean) => void;
+  toggleView: () => void;
   regenerateScatter: () => void;
 }
 
@@ -21,14 +22,19 @@ export function ViewProvider({ children }: { children: ReactNode }) {
     setIsActive(false);
   }, []);
 
+  const toggleView = useCallback(() => {
+    setIsActive((prev) => !prev);
+  }, []);
+
   const value = useMemo(
     () => ({
       isActive,
       scatterSeed,
       setIsActive,
+      toggleView,
       regenerateScatter,
     }),
-    [isActive, scatterSeed, regenerateScatter],
+    [isActive, scatterSeed, toggleView, regenerateScatter],
   );
 
   return <ViewContext.Provider value={value}>{children}</ViewContext.Provider>;

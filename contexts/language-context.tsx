@@ -3,41 +3,57 @@
 import type { ReactNode } from "react";
 import { createContext, use, useCallback, useMemo, useState } from "react";
 
-const DEFAULT_QUERY_EN = "Paintings of winter landscapes";
-const DEFAULT_QUERY_CN = "冬季风景画";
+export const LANGUAGES = ["en", "cn"] as const;
+export type Language = (typeof LANGUAGES)[number];
 
-// Mapping between English and Chinese suggestions
-const SUGGESTION_MAP: Record<string, string> = {
-  // EN to CN
-  "Still life paintings": "静物画",
-  "Paintings of flowers": "花卉画",
-  "Woodcuts of landscapes": "风景木刻",
-  "Portraits of women": "女性肖像",
-  "Sculptures of animals": "动物雕塑",
-  "Paintings of the sea": "海景画",
-  "Ancient coins": "古代钱币",
-  // CN to EN
-  静物画: "Still life paintings",
-  花卉画: "Paintings of flowers",
-  风景木刻: "Woodcuts of landscapes",
-  女性肖像: "Portraits of women",
-  动物雕塑: "Sculptures of animals",
-  海景画: "Paintings of the sea",
-  古代钱币: "Ancient coins",
-};
+export const DEFAULT_QUERY_EN = "Paintings of winter landscapes";
+export const DEFAULT_QUERY_CN = "冬季风景画";
+
+// Language-specific suggestions
+const SUGGESTIONS_EN = [
+  "Still life paintings",
+  "Paintings of flowers",
+  "Woodcuts of landscapes",
+  "Portraits of women",
+  "Sculptures of animals",
+  "Paintings of the sea",
+  "Ancient coins",
+] as const;
+
+const SUGGESTIONS_CN = [
+  "静物画",
+  "花卉画",
+  "风景木刻",
+  "女性肖像",
+  "动物雕塑",
+  "海景画",
+  "古代钱币",
+] as const;
+
+// Bidirectional mapping between English and Chinese suggestions
+const SUGGESTION_MAP: Record<string, string> = SUGGESTIONS_EN.reduce(
+  (acc, en, index) => {
+    const cn = SUGGESTIONS_CN[index];
+    acc[en] = cn; // EN to CN
+    acc[cn] = en; // CN to EN
+    return acc;
+  },
+  {} as Record<string, string>,
+);
 
 interface LanguageContextValue {
-  language: "en" | "cn";
-  setLanguage: (language: "en" | "cn") => void;
+  language: Language;
+  setLanguage: (language: Language) => void;
+  toggleLanguage: () => void;
+  displayLanguage: string;
   translateQuery: (currentQuery: string) => string;
-  defaultQueryEn: string;
-  defaultQueryCn: string;
+  suggestions: readonly string[];
 }
 
 export const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<"en" | "cn">("en");
+  const [language, setLanguage] = useState<Language>("en");
 
   const translateQuery = useCallback(
     (currentQuery: string): string => {
@@ -58,15 +74,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     [language],
   );
 
+  const toggleLanguage = useCallback(() => {
+    setLanguage(language === "en" ? "cn" : "en");
+  }, [language]);
+
   const value = useMemo(
     () => ({
       language,
       setLanguage,
+      toggleLanguage,
+      displayLanguage: language === "en" ? "CN" : "EN",
       translateQuery,
-      defaultQueryEn: DEFAULT_QUERY_EN,
-      defaultQueryCn: DEFAULT_QUERY_CN,
+      suggestions: language === "en" ? SUGGESTIONS_EN : SUGGESTIONS_CN,
     }),
-    [language, translateQuery],
+    [language, toggleLanguage, translateQuery],
   );
 
   return (
@@ -76,24 +97,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hooks for consuming language context
+// Custom hook for consuming language context
 export function useLanguage() {
   const context = use(LanguageContext);
   if (!context) throw new Error("LanguageContext is required");
   return context;
-}
-
-export function useLanguageToggle() {
-  const context = use(LanguageContext);
-  if (!context) throw new Error("LanguageContext is required");
-
-  const { language, setLanguage } = context;
-
-  const toggleLanguage = useCallback(() => {
-    setLanguage(language === "en" ? "cn" : "en");
-  }, [language, setLanguage]);
-
-  const displayLanguage = language === "en" ? "CN" : "EN";
-
-  return { toggleLanguage, displayLanguage };
 }

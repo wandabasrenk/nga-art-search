@@ -6,17 +6,17 @@ import useSWR from "swr";
 
 import { ImageGallery } from "@/components/image-gallery";
 import { SearchHeader } from "@/components/search-header";
-import { useLanguage } from "@/contexts/language-context";
+import { DEFAULT_QUERY_EN, useLanguage } from "@/contexts/language-context";
 import { useView } from "@/contexts/view-context";
 import { fetcher } from "@/lib/fetcher";
 import type { SearchResponse } from "@/lib/types";
 
 export default function Home() {
-  const { translateQuery, defaultQueryEn } = useLanguage();
+  const { translateQuery } = useLanguage();
   const { setIsActive } = useView();
 
-  const [query, setQuery] = useState(defaultQueryEn);
-  const [searchQuery, setSearchQuery] = useState(defaultQueryEn);
+  const [query, setQuery] = useState(DEFAULT_QUERY_EN);
+  const [searchQuery, setSearchQuery] = useState(DEFAULT_QUERY_EN);
 
   const { data, isLoading } = useSWR<SearchResponse>(
     searchQuery ? `/api/search?q=${encodeURIComponent(searchQuery)}` : null,

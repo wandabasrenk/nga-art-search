@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useLanguageToggle } from "@/contexts/language-context";
+import { useLanguage } from "@/contexts/language-context";
 
 const NAVIGATION_LINKS = [
   {
@@ -42,7 +42,7 @@ export function Header() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
-  const { toggleLanguage, displayLanguage } = useLanguageToggle();
+  const { toggleLanguage, displayLanguage } = useLanguage();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">

@@ -5,8 +5,15 @@ import { motion } from "motion/react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLanguage, useLanguageToggle } from "@/contexts/language-context";
+import { useLanguage } from "@/contexts/language-context";
 import { useView } from "@/contexts/view-context";
+
+const ANIMATION_DELAYS = {
+  TITLE: 0,
+  INPUT: 0.2,
+  SUGGESTIONS: 0.4,
+  BOTTOM_INPUT: 0.7,
+} as const;
 
 interface SearchHeaderProps {
   query: string;
@@ -27,7 +34,7 @@ function SearchInput({
   onQueryChange: (value: string) => void;
   showLanguageToggle?: boolean;
 }) {
-  const { toggleLanguage, displayLanguage } = useLanguageToggle();
+  const { toggleLanguage, displayLanguage } = useLanguage();
 
   return (
     <div className="flex items-center gap-2 w-full">
@@ -79,29 +86,8 @@ export function SearchHeader({
   onSearch,
   onSuggestionClick,
 }: SearchHeaderProps) {
-  const { language } = useLanguage();
+  const { suggestions } = useLanguage();
   const { isActive } = useView();
-  const suggestionsEn = [
-    "Still life paintings",
-    "Paintings of flowers",
-    "Woodcuts of landscapes",
-    "Portraits of women",
-    "Sculptures of animals",
-    "Paintings of the sea",
-    "Ancient coins",
-  ];
-
-  const suggestionsCn = [
-    "静物画",
-    "花卉画",
-    "风景木刻",
-    "女性肖像",
-    "动物雕塑",
-    "海景画",
-    "古代钱币",
-  ];
-
-  const suggestions = language === "en" ? suggestionsEn : suggestionsCn;
 
   return (
     <>
@@ -115,20 +101,20 @@ export function SearchHeader({
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
-            delay: 0,
+            delay: ANIMATION_DELAYS.TITLE,
             ease: "easeInOut",
           }}
         >
           Discover art with <br /> natural language
         </motion.h1>
 
-        {/* Input - fades out second (0.2s delay) */}
+        {/* Input - fades out second */}
         <motion.form
           onSubmit={onSearch}
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
-            delay: isActive ? 0.2 : 0,
+            delay: isActive ? ANIMATION_DELAYS.INPUT : 0,
             ease: "easeInOut",
           }}
         >
@@ -139,13 +125,13 @@ export function SearchHeader({
           />
         </motion.form>
 
-        {/* Suggestions - fade out last (0.4s delay) */}
+        {/* Suggestions - fade out last */}
         <motion.div
           className="flex flex-wrap justify-center gap-2 mt-4 max-w-full"
           animate={{ opacity: isActive ? 0 : 1 }}
           transition={{
             duration: 0.3,
-            delay: isActive ? 0.4 : 0,
+            delay: isActive ? ANIMATION_DELAYS.SUGGESTIONS : 0,
             ease: "easeInOut",
           }}
         >
@@ -170,7 +156,7 @@ export function SearchHeader({
         animate={{ opacity: isActive ? 1 : 0 }}
         transition={{
           duration: 0.3,
-          delay: isActive ? 0.7 : 0,
+          delay: isActive ? ANIMATION_DELAYS.BOTTOM_INPUT : 0,
           ease: "easeInOut",
         }}
         style={{ pointerEvents: isActive ? "auto" : "none" }}
