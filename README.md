@@ -1,12 +1,12 @@
 # Mixedbread Art Search (NGA Gallery)
 
-Discover over 50,000 artworks from the National Gallery of Art using natural language. This demo uses [Mixedbread Search](https://www.mixedbread.com/blog/mixedbread-search) and our multimodal model Omni to retrieve image results that match your query.
+Discover over 50,000 artworks from the National Gallery of Art using natural language.
 
 ## Prerequisites
 
 Before you begin, you’ll need:
 
-- Node.js 18+
+- Node.js 22
 - Mixedbread account — sign up at https://platform.mixedbread.com
 - Mixedbread API Key — create at https://platform.mixedbread.com/platform?next=api-keys
 - A Mixedbread Store (name or ID) holding your images
@@ -64,10 +64,10 @@ const res = await mxbai.stores.search({
 4) Start the dev server
 
 ```bash
-bun run dev
+bun dev
 ```
 
-## Upload PNGs to a Store (TypeScript)
+## Upload PNGs to a Store
 
 This minimal example creates a store and uploads all `.png` files from a directory, waiting for processing to complete.
 
@@ -113,26 +113,11 @@ Run with Bun:
 bun scripts/upload-pngs.ts
 ```
 
-## How This App Works
-
-- API route `app/api/search/route.ts` performs a Mixedbread stores search using your `MXBAI_API_KEY` and `store_identifiers`.
-- The UI calls `/api/search?q=...` and renders image results returned by the SDK.
-
 ## Features
 
 - Natural language search over artworks
 - Multimodal retrieval via Omni (text, image, audio, video)
 - Built on a public, open-access image dataset
-
-## Powered By
-
-- Mixedbread Search — https://www.mixedbread.com/docs/stores/overview
-- Omni multimodal model — https://www.mixedbread.com/docs/stores/ingest/file-types
-
-## Demos
-
-If you like art, but love cats even more:  
-https://cats.mixedbread.com/
 
 ## Troubleshooting
 
