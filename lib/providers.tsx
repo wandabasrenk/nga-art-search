@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { LanguageProvider } from "@/contexts/language-context";
 import { ViewProvider } from "@/contexts/view-context";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -13,9 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
       disableTransitionOnChange
       enableSystem
     >
-      <LanguageProvider>
-        <ViewProvider>{children}</ViewProvider>
-      </LanguageProvider>
+      <ViewProvider>{children}</ViewProvider>
     </ThemeProvider>
   );
 }
