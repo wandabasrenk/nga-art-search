@@ -4,7 +4,7 @@ export const MULTILINGUAL_SUGGESTIONS = [
   "冬季风景画", // Chinese - Winter landscape paintings
   "Peintures de fleurs", // French - Paintings of flowers
   "Xilografías de paisajes", // Spanish - Woodcuts of landscapes
-  "Frauenporträts", // German - Portraits of women
+  "Frauenportrait", // German - Portraits of women
   "Sculture di animali", // Italian - Sculptures of animals
   "海の風景画", // Japanese - Paintings of the sea (seascapes)
 ] as const;
