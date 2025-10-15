@@ -14,7 +14,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useLanguage } from "@/contexts/language-context";
 
 const NAVIGATION_LINKS = [
   {
@@ -41,8 +40,6 @@ export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
-
-  const { toggleLanguage, displayLanguage } = useLanguage();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -76,16 +73,7 @@ export function Header() {
           <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
         </div>
 
-        <div className="flex md:hidden items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleLanguage}
-            aria-label={`Switch to ${displayLanguage === "CN" ? "Chinese" : "English"}`}
-            className="font-light text-xs h-8 min-w-12 px-2"
-          >
-            {displayLanguage}
-          </Button>
+        <div className="flex md:hidden items-center">
           <Button
             variant="ghost"
             size="icon"

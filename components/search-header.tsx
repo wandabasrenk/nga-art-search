@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/contexts/language-context";
+import { MULTILINGUAL_SUGGESTIONS } from "@/lib/constants";
 import { useView } from "@/contexts/view-context";
 
 const ANIMATION_DELAYS = {
@@ -27,36 +27,20 @@ function SearchInput({
   query,
   isLoading,
   onQueryChange,
-  showLanguageToggle = true,
 }: {
   query: string;
   isLoading: boolean;
   onQueryChange: (value: string) => void;
-  showLanguageToggle?: boolean;
 }) {
-  const { toggleLanguage, displayLanguage } = useLanguage();
-
   return (
     <div className="flex items-center gap-2 w-full">
       <div className="relative flex-1">
-        {showLanguageToggle && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={toggleLanguage}
-            aria-label={`Switch to ${displayLanguage === "CN" ? "Chinese" : "English"}`}
-            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 font-light bg-background/70 text-xs backdrop-blur-sm h-7 min-w-10 px-2"
-          >
-            {displayLanguage}
-          </Button>
-        )}
         <Input
           type="text"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search for art..."
-          className={`!bg-background/70 tracking-tighter backdrop-blur-sm ${showLanguageToggle ? "pl-4 md:pl-14" : "pl-4"}`}
+          className="!bg-background/70 tracking-tighter backdrop-blur-sm pl-4"
           disabled={isLoading}
         />
       </div>
@@ -86,7 +70,6 @@ export function SearchHeader({
   onSearch,
   onSuggestionClick,
 }: SearchHeaderProps) {
-  const { suggestions } = useLanguage();
   const { isActive } = useView();
 
   return (
@@ -135,7 +118,7 @@ export function SearchHeader({
             ease: "easeInOut",
           }}
         >
-          {suggestions.map((suggestion) => (
+          {MULTILINGUAL_SUGGESTIONS.map((suggestion) => (
             <Button
               key={suggestion}
               type="button"
@@ -166,7 +149,6 @@ export function SearchHeader({
             query={query}
             isLoading={isLoading}
             onQueryChange={onQueryChange}
-            showLanguageToggle={false}
           />
         </form>
       </motion.div>

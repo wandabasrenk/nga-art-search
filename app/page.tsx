@@ -1,34 +1,26 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 
 import { ImageGallery } from "@/components/image-gallery";
 import { SearchHeader } from "@/components/search-header";
-import { DEFAULT_QUERY_EN, useLanguage } from "@/contexts/language-context";
 import { useView } from "@/contexts/view-context";
+import { DEFAULT_QUERY } from "@/lib/constants";
 import { fetcher } from "@/lib/fetcher";
 import type { SearchResponse } from "@/lib/types";
 
 export default function Home() {
-  const { translateQuery } = useLanguage();
   const { setIsActive } = useView();
 
-  const [query, setQuery] = useState(DEFAULT_QUERY_EN);
-  const [searchQuery, setSearchQuery] = useState(DEFAULT_QUERY_EN);
+  const [query, setQuery] = useState(DEFAULT_QUERY);
+  const [searchQuery, setSearchQuery] = useState(DEFAULT_QUERY);
 
   const { data, isLoading } = useSWR<SearchResponse>(
     searchQuery ? `/api/search?q=${encodeURIComponent(searchQuery)}` : null,
     fetcher,
   );
-
-  useEffect(() => {
-    setQuery((currentQuery) => {
-      const translatedQuery = translateQuery(currentQuery);
-      return translatedQuery !== currentQuery ? translatedQuery : currentQuery;
-    });
-  }, [translateQuery]);
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
